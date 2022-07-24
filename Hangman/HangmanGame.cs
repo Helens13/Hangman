@@ -18,6 +18,8 @@ namespace Hangman
         /// </summary>
         private char[] undescoreArray;
 
+        private bool IsGuessedWordIncomplete => undescoreArray.Contains('_');
+
         public HangmanGame(string word)
         {
             wordArray = word.ToCharArray();
@@ -33,7 +35,7 @@ namespace Hangman
             Console.WriteLine("Welcome! This is the word:");
             PrintUnderscoreArray();
             Console.WriteLine("Guess the character:");
-            while (CheckIfWeHaveMissingCharacters())
+            while (IsGuessedWordIncomplete)
             {
                 var newChar = ReadNewCharacter();
                 if (CanWeUseThisLetter(newChar))
@@ -68,15 +70,9 @@ namespace Hangman
                 }
             }
         }
-        private bool CheckIfWeHaveMissingCharacters()
-        {
-            var areThereMissingCharacter = undescoreArray.Contains('_');
-            return areThereMissingCharacter;
-        }
         private bool CanWeUseThisLetter(char newChar)
         {
-            bool isNewCharacterContainedInGuessedWord = wordArray.Contains(newChar);
-            return isNewCharacterContainedInGuessedWord;
+            return wordArray.Contains(newChar);
         }
         private bool HasUserUsedTheSameCharacter(char newChar)
         {
