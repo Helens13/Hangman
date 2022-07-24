@@ -8,68 +8,109 @@ namespace Hangman
 {
     public class HangmanGame
     {
-        public string wordToGuess;
-        
+        /// <summary>
+        /// this is the word we need to find, but splitted in an array
+        /// </summary>
+        private char[] wordArray;
+
+        /// <summary>
+        /// this is an array of underscores which will contained the correct guesses of the player
+        /// </summary>
+        private char[] undescoreArray;
 
         public HangmanGame(string word)
         {
-            wordToGuess = word;
+            wordArray = word.ToCharArray();
+            undescoreArray = new char[wordArray.Length];   
+            for(int i = 0; i < undescoreArray.Length; i++)
+            {
+                undescoreArray[i] = '_';
+            }
         }
 
-        public void GuessCharacter()
-
+        public void RunGame()
         {
-            int counter = 0;
-            string s;
-            string inputChar;
-            char[] outputWord = new char[wordToGuess.Length];
-            List<char> alreadyGuessed = new List<char>();
-
-            for (int j = 0; j < wordToGuess.Length; j++)
+            Console.WriteLine("Welcome! This is the word:");
+            PrintUnderscoreArray();
+            Console.WriteLine("Guess the character:");
+            while (CheckIfWeHaveMissingCharacters())
             {
-                outputWord[j] = '_';
-            }
-
-            for (int j = 0; j < 10; j++)
-            {
-                inputChar = Console.ReadLine();
-
-                s = inputChar;
-                s.ToCharArray();
-                for (int i = 0; i < wordToGuess.Length; i++)
+                var newChar = ReadNewCharacter();
+                if (CanWeUseThisLetter(newChar))
                 {
-                    if (s[0] == wordToGuess[i])
+                    if (HasUserUsedTheSameCharacter(newChar))
                     {
-                        counter++;
-                        outputWord[i] = s[0];
-                        alreadyGuessed.Add(s[0]);
+                        Console.WriteLine();
+                        Console.WriteLine("You already used this character");
                     }
-                    else if (!outputWord[i].Equals(wordToGuess[i]))
+                    else
                     {
-                        outputWord[i] = '_';
+                        AddNewCharacterToUnderscoreArray(newChar);
                     }
-                    
-                    
                 }
-                Console.WriteLine(outputWord);
-                if (counter == wordToGuess.Length)
+                else
                 {
-                    Console.WriteLine("Congrats! You won!");
+                    Console.WriteLine();
+                    Console.WriteLine("Character not in word! Try again!");
                 }
+                PrintUnderscoreArray();
             }
-          
-            
+            Console.WriteLine("Congrats! You won!");
         }
 
-        public void ShowUngessedWord()
+        private void AddNewCharacterToUnderscoreArray(char newChar)
         {
-            char[] wordToShow = new char[wordToGuess.Length];
-            for (int i = 0; i < wordToGuess.Length; i++)
+            for (int i = 0; i < wordArray.Length; i++)
             {
-                Console.Write("_" + " ");
+                if (wordArray[i] == newChar)
+                {
+                    undescoreArray[i] = newChar;
+                }
             }
         }
-
-
+        private bool CheckIfWeHaveMissingCharacters()
+        {
+            var areThereMissingCharacter = undescoreArray.Contains('_');
+            return areThereMissingCharacter;
+        }
+        private bool CanWeUseThisLetter(char newChar)
+        {
+            bool isNewCharacterContainedInGuessedWord = wordArray.Contains(newChar);
+            return isNewCharacterContainedInGuessedWord;
+        }
+        private bool HasUserUsedTheSameCharacter(char newChar)
+        {
+            bool haveWeAlreadyUsedThisCharacter = undescoreArray.Contains(newChar);
+            return haveWeAlreadyUsedThisCharacter;
+        }
+        private char ReadNewCharacter()
+        {
+            Console.Write("Enter a character: ");
+            var myCharacter = Console.ReadKey().KeyChar;
+            while (true)
+            {
+                if (char.IsLetter(myCharacter))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.Write("Invalid input! Enter a different character: ");
+                    myCharacter = Console.ReadKey().KeyChar;
+                }
+            }
+            return myCharacter;
+        }
+        private void PrintUnderscoreArray()
+        {
+            Console.WriteLine();
+            foreach(var ch in undescoreArray)
+            {
+                Console.Write(ch);
+                Console.Write(' ');
+            }
+            Console.WriteLine();
+        }
     }
 }
