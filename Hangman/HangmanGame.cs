@@ -40,15 +40,7 @@ namespace Hangman
                 var newChar = ReadNewCharacter();
                 if (CanWeUseThisLetter(newChar))
                 {
-                    if (HasUserUsedTheSameCharacter(newChar))
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine("You already used this character");
-                    }
-                    else
-                    {
-                        AddNewCharacterToUnderscoreArray(newChar);
-                    }
+                    AddNewCharacterToUnderscoreArray(newChar);
                 }
                 else
                 {
@@ -82,18 +74,26 @@ namespace Hangman
         private char ReadNewCharacter()
         {
             Console.Write("Enter a character: ");
-            var myCharacter = Console.ReadKey().KeyChar;
+            char myCharacter;
             while (true)
             {
+                myCharacter = Console.ReadKey().KeyChar;
                 if (char.IsLetter(myCharacter))
                 {
-                    break;
+                    if (HasUserUsedTheSameCharacter(myCharacter))
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("You already used this character");
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 else
                 {
                     Console.WriteLine();
                     Console.Write("Invalid input! Enter a different character: ");
-                    myCharacter = Console.ReadKey().KeyChar;
                 }
             }
             return myCharacter;
